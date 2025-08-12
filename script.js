@@ -9,9 +9,7 @@ function Book(title, author, pages, read){
     this.id = crypto.randomUUID();
 }
 
-let theHobbit = new Book("The Hobbit", "J.R.R Tolkien", 295, true);
-
-Book.prototype.changeStatus = () => {
+Book.prototype.changeStatus = function () {
     this.read = !this.read;
 }
 
@@ -46,6 +44,35 @@ function createColumn(content, className){
     return tdata;
 }
 
+function createActionBtns(bookID){
+    const actionsCol = createColumn('', 'actions');
+
+    const statusBtn = document.createElement('button');
+    statusBtn.classList.add('btn', 'btn-status');
+    statusBtn.textContent = "Change Status";
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('btn', 'btn-delete');
+    deleteBtn.textContent = "Delete";
+
+    statusBtn.addEventListener('click', () => {
+        const index = myLibrary.findIndex((item) => item.id === bookID);
+        myLibrary[index].changeStatus();
+        displayBooks();
+    });
+
+    deleteBtn.addEventListener('click', () => {
+        const index = myLibrary.findIndex((item) => item.id === bookID);
+        myLibrary.splice(index, 1);
+        displayBooks();
+    });
+
+    actionsCol.appendChild(statusBtn);
+    actionsCol.appendChild(deleteBtn);
+
+    return actionsCol;
+}
+
 function createStatusBadge(read){
     const badge = document.createElement('span');
     badge.classList.add('status-badge', read ? 'status-read' : 'status-unread');
@@ -57,6 +84,8 @@ function displayBooks(){
     tbody.textContent = "";
     myLibrary.forEach((book) => {
         const row = createRow(book);
+        const actionBtns = createActionBtns(book.id);
+        row.appendChild(actionBtns);
         tbody.appendChild(row);
     });
 }

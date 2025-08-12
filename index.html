@@ -22,7 +22,31 @@
             <tbody>
             </tbody>
         </table>
-        <button type="button">Add Book</button>
+        <button type="button">New Book</button>
+        <dialog>
+            <form action="#" method="dialog">
+                <div class="title">
+                    <label for="title">Book Title: </label>
+                    <input id="title" type="text">
+                </div>
+                <div class="author">
+                    <label for="author">Author:</label>
+                    <input id="author" type="text">
+                </div>
+                <div class="pages">
+                    <label for="pages">Number of Pages:</label>
+                    <input id="pages" type="number">
+                </div>
+                <div class="status">
+                    <input type="checkbox" id="status">
+                    <label for="status">I have read this book</label>
+                </div>
+                <div>
+                    <button class="btn" type="button" formnovalidate>Cancel</button>
+                    <button class="btn" type="submit">Submit</button>
+                </div>
+            </form>
+        </dialog>
     </div>
     <script src="script.js"></script>
 </body>
