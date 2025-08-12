@@ -1,22 +1,58 @@
 const myLibrary = [];
 const tbody = document.querySelector("tbody");
+const dialog = document.querySelector('dialog');
+const newBookBtn = document.querySelector('.add-book-btn');
+const cancelBtn = document.querySelector('.btn-cancel');
+const titleInput = document.querySelector('#title');
+const authorInput = document.querySelector('#author');
+const pagesInput = document.querySelector('#pages');
+const statusInput = document.querySelector('#status');
+const form = document.querySelector('form');
 
-function Book(title, author, pages, read){
+function Book(title, author, pages, status){
+    this.id = crypto.randomUUID();
     this.title = title;
     this.author = author;
     this.pages = pages;
-    this.read = read;
-    this.id = crypto.randomUUID();
+    this.status = status;
 }
 
 Book.prototype.changeStatus = function () {
-    this.read = !this.read;
+    this.status = !this.status;
 }
 
-function addBookToLibrary(title, author, pages, read){
-    const newBook = new Book(title, author, pages, read);
+function addBookToLibrary(title, author, pages, status){
+    const newBook = new Book(title, author, pages, status);
     myLibrary.push(newBook);
-    console.log(newBook);
+}
+
+newBookBtn.addEventListener('click', () => {
+    dialog.showModal();
+});
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addBookToLibrary(
+        titleInput.value,
+        authorInput.value,
+        pagesInput.value,
+        statusInput.checked
+    );
+    clearForm();
+    dialog.close();
+    displayBooks();
+})
+
+cancelBtn.addEventListener('click', () => {
+    clearForm();
+    dialog.close();
+});
+
+function clearForm(){
+    titleInput.value = "";
+    authorInput.value = "";
+    pagesInput.value = "";
+    statusInput.checked = false;
 }
 
 function createRow(book){
@@ -26,7 +62,7 @@ function createRow(book){
     trow.appendChild(createColumn(book.title, 'title'));
     trow.appendChild(createColumn(book.author, 'author'));
     trow.appendChild(createColumn(book.pages, 'pages'));
-    trow.appendChild(createColumn(createStatusBadge(book.read), 'status'));
+    trow.appendChild(createColumn(createStatusBadge(book.status), 'status'));
 
     return trow;
 }
@@ -73,10 +109,10 @@ function createActionBtns(bookID){
     return actionsCol;
 }
 
-function createStatusBadge(read){
+function createStatusBadge(status){
     const badge = document.createElement('span');
-    badge.classList.add('status-badge', read ? 'status-read' : 'status-unread');
-    badge.textContent = read ? 'Read' : 'Unread';
+    badge.classList.add('status-badge', status ? 'status-read' : 'status-unread');
+    badge.textContent = status ? 'Read' : 'Unread';
     return badge;
 }
 
@@ -88,6 +124,7 @@ function displayBooks(){
         row.appendChild(actionBtns);
         tbody.appendChild(row);
     });
+    console.log(myLibrary);
 }
 
 addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, true);
