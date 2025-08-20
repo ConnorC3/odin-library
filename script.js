@@ -1,4 +1,3 @@
-const myLibrary = [];
 const tbody = document.querySelector("tbody");
 const dialog = document.querySelector('dialog');
 const newBookBtn = document.querySelector('.add-book-btn');
@@ -9,21 +8,25 @@ const pagesInput = document.querySelector('#pages');
 const statusInput = document.querySelector('#status');
 const form = document.querySelector('form');
 
-function Book(title, author, pages, status){
-    this.id = crypto.randomUUID();
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.status = status;
-}
+class Book {
+    static myLibrary = [];
 
-Book.prototype.changeStatus = function () {
-    this.status = !this.status;
-}
+    constructor(title, author, pages, status){
+        this.id = crypto.randomUUID();
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.status = status;
+    }
 
-function addBookToLibrary(title, author, pages, status){
-    const newBook = new Book(title, author, pages, status);
-    myLibrary.push(newBook);
+    changeStatus() {
+        this.status = !this.status;
+    }
+
+    static addBookToLibrary(title, author, pages, status){
+        const newBook = new Book(title, author, pages, status);
+        Book.myLibrary.push(newBook);
+    }
 }
 
 newBookBtn.addEventListener('click', () => {
@@ -32,7 +35,7 @@ newBookBtn.addEventListener('click', () => {
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    addBookToLibrary(
+    Book.addBookToLibrary(
         titleInput.value,
         authorInput.value,
         pagesInput.value,
@@ -92,14 +95,14 @@ function createActionBtns(bookID){
     deleteBtn.textContent = "Delete";
 
     statusBtn.addEventListener('click', () => {
-        const index = myLibrary.findIndex((item) => item.id === bookID);
-        myLibrary[index].changeStatus();
+        const index = Book.myLibrary.findIndex((item) => item.id === bookID);
+        Book.myLibrary[index].changeStatus();
         displayBooks();
     });
 
     deleteBtn.addEventListener('click', () => {
-        const index = myLibrary.findIndex((item) => item.id === bookID);
-        myLibrary.splice(index, 1);
+        const index = Book.myLibrary.findIndex((item) => item.id === bookID);
+        Book.myLibrary.splice(index, 1);
         displayBooks();
     });
 
@@ -118,15 +121,15 @@ function createStatusBadge(status){
 
 function displayBooks(){
     tbody.textContent = "";
-    myLibrary.forEach((book) => {
+    Book.myLibrary.forEach((book) => {
         const row = createRow(book);
         const actionBtns = createActionBtns(book.id);
         row.appendChild(actionBtns);
         tbody.appendChild(row);
     });
-    console.log(myLibrary);
+    console.log(Book.myLibrary);
 }
 
-addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, true);
+Book.addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, true);
 
 displayBooks();
